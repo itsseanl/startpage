@@ -1,5 +1,6 @@
 import { sanity } from "../util/sanity.js";
 import imageUrlBuilder from "@sanity/image-url";
+import React, { useEffect, useState } from "react";
 
 // Get a pre-configured url-builder from your sanity client
 const builder = imageUrlBuilder(sanity);
@@ -9,6 +10,11 @@ function urlFor(source) {
 }
 
 const Home = ({ favorite }) => {
+	const [viewModal, setViewModal] = useState(false);
+
+	function somethingElse() {
+		console.log("poof");
+	}
 	return (
 		<>
 			<div className="favorites">
@@ -18,17 +24,34 @@ const Home = ({ favorite }) => {
 							<img
 								src={urlFor(data.image)
 									.width(200)
-									.height(100)
 									.url()}
 							/>
 							<p key={data.title}>{data.title}</p>
 						</a>
 					);
 				})}
-				<div className="favorite addNew">
+				<div className="favorite add-new" onClick={() => setViewModal(v => !v)}>
 					<p>+</p>
 				</div>
 			</div>
+			{viewModal != false ? (
+				<>
+					<div className="modal-wrapper" onClick={() => setViewModal(v => !v)}>
+						<div className="modal">
+							test
+							<div
+								className="cstm-btn"
+								onClick={e => {
+									e.stopPropagation();
+									somethingElse();
+								}}
+							>
+								CLICK THIS
+							</div>
+						</div>
+					</div>
+				</>
+			) : null}
 			<style jsx>
 				{`
 					* {
@@ -43,6 +66,7 @@ const Home = ({ favorite }) => {
 					.favorites {
 						display: grid;
 						grid-template-columns: repeat(4, 1fr);
+
 						grid-column-gap: 1em;
 					}
 					.favorite {
@@ -59,10 +83,32 @@ const Home = ({ favorite }) => {
 						color: #000;
 					}
 
-					.addNew {
+					.add-new {
 						display: flex;
 						justify-content: center;
 						align-items: center;
+					}
+					.modal-wrapper {
+						width: 100vw;
+						height: 100vh;
+						position: absolute;
+						left: 0;
+						top: 0;
+						background: rgba(0, 0, 0, 0.3);
+						z-index: 99999;
+						display: flex;
+						justify-content: Center;
+						align-items: center;
+					}
+					.modal {
+						background: #fff;
+						left: 0;
+						right: 0;
+						margin: auto;
+						display: block;
+						position: relative;
+						width: 70vw;
+						height: 80vh;
 					}
 				`}
 			</style>
